@@ -7,24 +7,31 @@ public class Calculator {
     public double evaluateMathExpression(String expression) {
         // \\s+ -> reg ex to match any whitespace
         List<String> expressionArray = expressionToArray(expression.replaceAll("\\s+", ""));
+        return evaluateSum(evaluateMultiplication(expressionArray));
+    }
 
-        for (int i = 0; i < expressionArray.size(); i++) {
-            if (expressionArray.get(i).equals("*")) {
-                double leftDigit = Double.parseDouble((expressionArray.get(i-1)));
-                double rightDigit = Double.parseDouble((expressionArray.get(i+1)));
+    private List<String> evaluateMultiplication(List<String> expression) {
+        for (int i = 0; i < expression.size(); i++) {
+            if (expression.get(i).equals("*")) {
+                double leftDigit = Double.parseDouble((expression.get(i-1)));
+                double rightDigit = Double.parseDouble((expression.get(i+1)));
                 double result = leftDigit * rightDigit;
 
-                expressionArray.set(i-1, Double.toString(result));
-                expressionArray.subList(i, i + 2).clear();
+                expression.set(i-1, Double.toString(result));
+                expression.subList(i, i + 2).clear();
 
                 i--;
             }
         }
 
-        double res = Double.parseDouble(expressionArray.getFirst());
-        for (int i = 1; i < expressionArray.size(); i+=2) {
-            String operator = expressionArray.get(i);
-            double nextNumber = Double.parseDouble(expressionArray.get(i + 1));
+        return expression;
+    }
+
+    private Double evaluateSum(List<String> expression){
+        double res = Double.parseDouble(expression.getFirst());
+        for (int i = 1; i < expression.size(); i+=2) {
+            String operator = expression.get(i);
+            double nextNumber = Double.parseDouble(expression.get(i + 1));
 
             if (operator.equals("+")) {
                 res += nextNumber;
@@ -35,27 +42,6 @@ public class Calculator {
 
         return res;
     }
-
-    /*
-    private double calculate(String expression, String operator) {
-        // This method contains all the calculation logic
-        String[] stringSplit = expression.split(operator);
-
-        double res = Double.parseDouble(stringSplit[0]);
-
-        for (int i = 1; i < stringSplit.length; i++) {
-            double num = Double.parseDouble(stringSplit[i]);
-
-            switch (operator) {
-                case "\\+" -> res += num;
-                case "\\-" -> res -= num;
-                case "\\*" -> res *= num;
-            }
-        }
-
-        return res;
-    }
-    */
 
     private List<String> expressionToArray(String expression) {
         List<String> stringList = new ArrayList<>();
